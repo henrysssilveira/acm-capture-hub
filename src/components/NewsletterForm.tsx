@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { z } from "zod";
+import { supabase } from "@/integrations/supabase/client";
 
 const newsletterSchema = z.object({
   email: z
@@ -53,10 +54,25 @@ export const NewsletterForm = () => {
       // Validate form data
       const validatedData = newsletterSchema.parse(formData);
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Insert into database
+      const { error: dbError } = await supabase
+        .from('newsletter_contacts')
+        .insert({
+          email: validatedData.email,
+          company: validatedData.company,
+          phone: validatedData.phone
+        });
 
-      console.log("Newsletter signup:", validatedData);
+      if (dbError) {
+        // Check for duplicate email
+        if (dbError.code === '23505') {
+          toast.error("Este email já está cadastrado!");
+        } else {
+          console.error("Database error:", dbError);
+          toast.error("Erro ao realizar cadastro. Tente novamente.");
+        }
+        return;
+      }
 
       toast.success("Cadastro realizado com sucesso! Entraremos em contato em breve.");
       
