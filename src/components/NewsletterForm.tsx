@@ -148,7 +148,7 @@ export const NewsletterForm = () => {
       <Button
         type="submit"
         disabled={isSubmitting}
-        className="w-full bg-primary text-primary-foreground hover:bg-secondary transition-all font-medium py-6 text-base"
+        className="w-full h-12 bg-gradient-to-r from-secondary to-accent text-secondary-foreground hover:opacity-90 transition-all font-semibold text-base shadow-lg hover:shadow-xl"
       >
         {isSubmitting ? "Enviando..." : "Cadastrar"}
       </Button>
